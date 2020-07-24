@@ -15,14 +15,22 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var tecAmount=TextEditingController();
 
-  Razorpay _razorpay = Razorpay();
+  Razorpay _razorpay;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _razorpay.clear();
+    super.dispose();
   }
 
   @override
@@ -43,15 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
               labelText: "Enter Amount"
             ),
           )
-          ,MaterialButton(onPressed: (){
 
-            if(tecAmount.text.length>0){
-              _showNativeView(tecAmount.text);
-            }else{
-             Toast.show("enter amount", context,gravity: Toast.CENTER);
-            }
+
+          ,MaterialButton(onPressed: (){
+            _showNativeView();
+
           },
-          child: Text("Payment gateway"),),
+          child: Text("Payment Rs 1"),),
 
         ],
       ),
@@ -64,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _handlePaymentError(PaymentFailureResponse response) {
     // Do something when payment fails
+    print(response.message);
     Toast.show("Eroor", context,gravity: Toast.CENTER);
   }
 
@@ -74,11 +81,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
    String razorPayTxestId = "rzp_test_1DP5mmOlF5G5ag";
-  Future<Null> _showNativeView(String amount) async {
+  Future<Null> _showNativeView( ) async {
     var options = {
       'key': razorPayTxestId,
 //      'key': razorPayKeyId,
-      'amount': (1 * double.parse(amount)),
+      'amount': (1 * 100),
 //      'amount': 100,
       'name': 'Shafeeque',
       'description': "my descript",
