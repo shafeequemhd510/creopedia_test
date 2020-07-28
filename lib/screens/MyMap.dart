@@ -12,6 +12,7 @@ class MyMap extends StatefulWidget {
 class MapSampleState extends State<MyMap> {
   Completer<GoogleMapController> _controller = Completer();
   final Set<Polyline> _polyline = {};
+  final Set<Marker> _markers = {};
 
   static final _originLatitude=11.066546;
   static final _originLongitude=76.048018;

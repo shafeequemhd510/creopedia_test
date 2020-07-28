@@ -1,5 +1,6 @@
 import 'package:creopediatest/screens/MyMap.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:toast/toast.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -14,7 +15,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var tecAmount=TextEditingController();
-
+  int totalamount = 0;
+static const platform= const MethodChannel("razorpay_flutter");
   Razorpay _razorpay;
   @override
   void initState() {
@@ -50,14 +52,27 @@ class _HomeScreenState extends State<HomeScreen> {
             decoration: InputDecoration(
               labelText: "Enter Amount"
             ),
+            onChanged: (value){
+              setState(() {
+                totalamount=num.parse(value);
+
+              });
+
+            },
           )
 
 
-          ,MaterialButton(onPressed: (){
-            _showNativeView();
+          ,RaisedButton(onPressed: (){
 
+           if(tecAmount.text.isNotEmpty){
+             _showNativeView();
+           }
+           else{
+
+             Toast.show("Please Enter the Amount", context,gravity: Toast.CENTER);
+           }
           },
-          child: Text("Payment Rs 1"),),
+          child: Text(" Pay "),),
 
         ],
       ),
@@ -71,21 +86,23 @@ class _HomeScreenState extends State<HomeScreen> {
   void _handlePaymentError(PaymentFailureResponse response) {
     // Do something when payment fails
     print(response.message);
-    Toast.show("Eroor", context,gravity: Toast.CENTER);
+    Toast.show("Error", context,gravity: Toast.CENTER);
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     // Do something when an external wallet is selected
-    Toast.show("Excternal ", context,gravity: Toast.CENTER);
+    Toast.show("External ", context,gravity: Toast.CENTER);
   }
 
 
    String razorPayTxestId = "rzp_test_1DP5mmOlF5G5ag";
+
+
   Future<Null> _showNativeView( ) async {
     var options = {
       'key': razorPayTxestId,
 //      'key': razorPayKeyId,
-      'amount': (1 * 100),
+      'amount': (totalamount * 100),
 //      'amount': 100,
       'name': 'Shafeeque',
       'description': "my descript",
